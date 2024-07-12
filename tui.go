@@ -9,27 +9,28 @@ import (
 )
 
 const (
-	viewportWidth  = 60
-	viewportHeight = 10
+	viewportWidth      = 80 // Adjusted for two wider viewports side by side
+	viewportUpHeight   = 10
+	viewportDownHeight = 15
 )
 
 type model struct {
-	topViewport    viewport.Model
-	bottomViewport viewport.Model
-	client         *OpenAIClient
+	upViewport   viewport.Model
+	downViewport viewport.Model
+	client       *OpenAIClient
 }
 
 func initialModel() model {
-	topVp := viewport.New(viewportWidth, viewportHeight)
-	topVp.SetContent("Waiting for clipboard content...")
+	leftVp := viewport.New(viewportWidth, viewportUpHeight)
+	leftVp.SetContent("Waiting for clipboard content...")
 
-	bottomVp := viewport.New(viewportWidth, viewportHeight)
-	bottomVp.SetContent("Transferred text will appear here...")
+	rightVp := viewport.New(viewportWidth, viewportDownHeight)
+	rightVp.SetContent("Transferred text will appear here...")
 
 	return model{
-		topViewport:    topVp,
-		bottomViewport: bottomVp,
-		client:         NewOpenAIClient(),
+		upViewport:   leftVp,
+		downViewport: rightVp,
+		client:       NewOpenAIClient(),
 	}
 }
 
@@ -45,30 +46,33 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			return m, tea.Quit
 		}
 	case clipboardMsg:
-		m.topViewport.SetContent(msg.content)
+		m.upViewport.SetContent(msg.content)
 		transferredText, err := m.client.transferText(msg.content, "en")
 		if err != nil {
-			m.bottomViewport.SetContent(fmt.Sprintf("Error: %v", err))
+			m.downViewport.SetContent(fmt.Sprintf("Error: %v", err))
 		} else {
-			m.bottomViewport.SetContent(transferredText)
+			m.downViewport.SetContent(transferredText)
 		}
 	}
-	m.topViewport, cmd = m.topViewport.Update(msg)
-	m.bottomViewport, _ = m.bottomViewport.Update(msg)
+	m.upViewport, cmd = m.upViewport.Update(msg)
+	m.downViewport, _ = m.downViewport.Update(msg)
 	return m, cmd
 }
 
 func (m model) View() string {
 	viewportStyle := lipgloss.NewStyle().
-		BorderStyle(lipgloss.RoundedBorder()).
-		BorderForeground(lipgloss.Color("62"))
-		// Padding(1).
-		// Width(viewportWidth + 2) // +2 for borders
+		Background(lipgloss.Color("240")) // Adjust color to match terminal background
+
+	divider := lipgloss.NewStyle().
+		Background(lipgloss.Color("242")). // Adjust divider color
+		Width(1).
+		Render(" ")
 
 	return lipgloss.JoinVertical(
-		lipgloss.Center,
-		viewportStyle.Render(m.topViewport.View()),
-		viewportStyle.Render(m.bottomViewport.View()),
+		lipgloss.Top,
+		viewportStyle.Render(m.upViewport.View()),
+		divider,
+		viewportStyle.Render(m.downViewport.View()),
 	) + "\n\nPress 'q' to quit"
 }
 
