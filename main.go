@@ -1,46 +1,20 @@
-// main.go
 package main
 
 import (
-	"fmt"
-	"time"
-
-	"github.com/atotto/clipboard"
-	tea "github.com/charmbracelet/bubbletea"
-	hook "github.com/robotn/gohook"
-)
-
-const (
-	doubleCopyThreshold = 500 * time.Millisecond
-)
-
-var (
-	lastCopyTime = time.Now()
-	lastContent  = ""
+	"github.com/niuguy/langmate/app"
 )
 
 func main() {
-	p := tea.NewProgram(initialModel())
 
-	go func() {
-		hook.Register(hook.KeyDown, []string{"cmd", "c"}, func(e hook.Event) {
-			currentTime := time.Now()
-			content, err := clipboard.ReadAll()
-			if err != nil {
-				fmt.Println("Error reading clipboard:", err)
-				return
-			}
-			if content == lastContent && currentTime.Sub(lastCopyTime) < doubleCopyThreshold {
-				p.Send(clipboardMsg{content: content})
-			}
-			lastCopyTime = currentTime
-			lastContent = content
-		})
-		s := hook.Start()
-		<-hook.Process(s)
-	}()
+	app.StartHook()
+	// openaiClient := llm.NewOpenAIClient()
 
-	if _, err := p.Run(); err != nil {
-		fmt.Println("Error running program:", err)
-	}
+	// TELEBOT_API_KEY := os.Getenv("TELEBOT_API_KEY")
+
+	// botServer, err := api.NewBotServer(TELEBOT_API_KEY, openaiClient)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// botServer.Start()
+
 }

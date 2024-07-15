@@ -1,4 +1,4 @@
-package main
+package app
 
 import (
 	"fmt"
@@ -6,6 +6,8 @@ import (
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
+	"github.com/niuguy/langmate/llm"
 )
 
 const (
@@ -17,7 +19,7 @@ const (
 type model struct {
 	upViewport   viewport.Model
 	downViewport viewport.Model
-	client       *OpenAIClient
+	client       *llm.OpenAIClient
 }
 
 func initialModel() model {
@@ -30,7 +32,7 @@ func initialModel() model {
 	return model{
 		upViewport:   leftVp,
 		downViewport: rightVp,
-		client:       NewOpenAIClient(),
+		client:       llm.NewOpenAIClient(),
 	}
 }
 
@@ -47,7 +49,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case clipboardMsg:
 		m.upViewport.SetContent(msg.content)
-		transferredText, err := m.client.transferText(msg.content, "en")
+		transferredText, err := m.client.TransferText(msg.content, "en")
 		if err != nil {
 			m.downViewport.SetContent(fmt.Sprintf("Error: %v", err))
 		} else {
@@ -61,17 +63,17 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 func (m model) View() string {
 	viewportStyle := lipgloss.NewStyle().
-		Background(lipgloss.Color("240")) // Adjust color to match terminal background
+		Background(lipgloss.Color("240")).Padding(1)
 
-	divider := lipgloss.NewStyle().
-		Background(lipgloss.Color("242")). // Adjust divider color
-		Width(1).
-		Render(" ")
+	// divider := lipgloss.NewStyle().
+	// 	Background(lipgloss.Color("242")).
+	// 	Width(1).
+	// 	Render(" ")
 
 	return lipgloss.JoinVertical(
 		lipgloss.Top,
 		viewportStyle.Render(m.upViewport.View()),
-		divider,
+		// divider,
 		viewportStyle.Render(m.downViewport.View()),
 	) + "\n\nPress 'q' to quit"
 }

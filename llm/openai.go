@@ -1,4 +1,4 @@
-package main
+package llm
 
 import (
 	"context"
@@ -23,7 +23,7 @@ func NewOpenAIClient() *OpenAIClient {
 	return &OpenAIClient{Client: client}
 }
 
-func (c *OpenAIClient) transferText(text string, lang string) (string, error) {
+func (c *OpenAIClient) TransferText(text string, lang string) (string, error) {
 	prompt := fmt.Sprintf("You will receive a text and a destination language. "+
 		"If the text is not in the destination language, translate it."+
 		"If the text is already in the destination language, rephrase it for clarity and style."+
