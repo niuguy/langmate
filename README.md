@@ -2,6 +2,9 @@
 
 LangMate is a command-line application developed in Go, designed to provide users with a seamless interaction with different language models. It supports various models, allowing users to choose between models like Ollama and OpenAI for processing and generating text.
 
+![image](https://github.com/user-attachments/assets/57d1df13-7968-49dc-afef-4dca71f4d1d9)
+
+
 ## Features
 
 - **Multiple Language Models**: Choose between  OpenAI and Ollama 
