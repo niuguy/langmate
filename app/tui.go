@@ -17,9 +17,9 @@ const (
 )
 
 type model struct {
-	upViewport   viewport.Model
-	downViewport viewport.Model
-	client       *llm.OpenAIClient
+	upViewport    viewport.Model
+	downViewport  viewport.Model
+	textProcessor llm.TextProcessor
 }
 
 func initialModel() model {
@@ -30,9 +30,9 @@ func initialModel() model {
 	rightVp.SetContent("Transferred text will appear here...")
 
 	return model{
-		upViewport:   leftVp,
-		downViewport: rightVp,
-		client:       llm.NewOpenAIClient(),
+		upViewport:    leftVp,
+		downViewport:  rightVp,
+		textProcessor: llm.CreateTextProcessor("Ollama"),
 	}
 }
 
@@ -49,7 +49,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case clipboardMsg:
 		m.upViewport.SetContent(msg.content)
-		transferredText, err := m.client.TransferText(msg.content, "en")
+		transferredText, err := m.textProcessor.TransferText(msg.content, "en")
 		if err != nil {
 			m.downViewport.SetContent(fmt.Sprintf("Error: %v", err))
 		} else {

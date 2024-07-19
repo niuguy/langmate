@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/atotto/clipboard"
-	tea "github.com/charmbracelet/bubbletea"
+	"github.com/niuguy/langmate/llm"
 	hook "github.com/robotn/gohook"
 )
 
@@ -18,26 +18,32 @@ var (
 	lastContent  = ""
 )
 
-func StartHook() {
-	p := tea.NewProgram(initialModel())
-	go func() {
-		hook.Register(hook.KeyDown, []string{"cmd", "c"}, func(e hook.Event) {
-			currentTime := time.Now()
-			content, err := clipboard.ReadAll()
-			if err != nil {
-				fmt.Println("Error reading clipboard:", err)
-				return
-			}
-			if content == lastContent && currentTime.Sub(lastCopyTime) < doubleCopyThreshold {
-				p.Send(clipboardMsg{content: content})
-			}
-			lastCopyTime = currentTime
-			lastContent = content
-		})
-		s := hook.Start()
-		<-hook.Process(s)
-	}()
-	if _, err := p.Run(); err != nil {
-		fmt.Println("Error running program:", err)
-	}
+func StartHook(textProcessor llm.TextProcessor) {
+	// p := tea.NewProgram(initialModel())
+
+	fmt.Println("Pending for clipboard content...")
+	// go func() {
+	hook.Register(hook.KeyDown, []string{"cmd", "c"}, func(e hook.Event) {
+		currentTime := time.Now()
+		content, err := clipboard.ReadAll()
+		if err != nil {
+			fmt.Println("Error reading clipboard:", err)
+			return
+		}
+		if content == lastContent && currentTime.Sub(lastCopyTime) < doubleCopyThreshold {
+			fmt.Println(content)
+			fmt.Println("-----------------")
+			fmt.Println(textProcessor.TransferText(content, "en"))
+			fmt.Println("-----------------")
+			fmt.Println("Pending for clipboard content...")
+		}
+		lastCopyTime = currentTime
+		lastContent = content
+	})
+	s := hook.Start()
+	<-hook.Process(s)
+	// }()
+	// if _, err := p.Run(); err != nil {
+	// 	fmt.Println("Error running program:", err)
+	// }
 }
