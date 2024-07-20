@@ -67,7 +67,7 @@ func StartHook(textProcessor llm.TextProcessor, lang string) {
 		go showWaitingAnimation(done)
 		processedText, err := textProcessor.TransferText(input, lang)
 		done <- true
-
+		fmt.Print("\033[H\033[2J") // Clear screen
 		fmt.Println(input)
 
 		fmt.Println("-----------------")
@@ -77,7 +77,6 @@ func StartHook(textProcessor llm.TextProcessor, lang string) {
 		} else {
 			fmt.Println(processedText)
 		}
-		// fmt.Println("*****************")
 	}
 }
 
