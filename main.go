@@ -9,23 +9,28 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// rootCmd represents the base command when called without any subcommands
+var (
+	model string
+	lang  string
+)
+
 var rootCmd = &cobra.Command{
 	Use:   "langmate",
 	Short: "Double copy text to translate or rephrase",
 	Long:  `Double copy text to translate or rephrase`,
 	Run: func(cmd *cobra.Command, args []string) {
-		llmType := "p" // Default to OpenAI
-		if len(args) > 0 {
-			llmType = args[0]
-		}
-		textProcessor := llm.CreateTextProcessor(llmType)
-		app.StartHook(textProcessor)
+		// fmt.Println("model:", model)
+		// fmt.Println("lang:", lang)
+		textProcessor := llm.CreateTextProcessor(model)
+		app.StartHook(textProcessor, lang)
 	},
 }
 
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
+func init() {
+	rootCmd.PersistentFlags().StringVarP(&model, "model", "m", "gpt", "Specify the model to use (gpt,llama)")
+	rootCmd.PersistentFlags().StringVarP(&lang, "lang", "l", "en", "Specify the target language (e.g., en, fr)")
+}
+
 func main() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

@@ -6,9 +6,9 @@ type TextProcessor interface {
 
 func CreateTextProcessor(llmtype string) TextProcessor {
 	switch llmtype {
-	case "o", "openai":
+	case "gpt":
 		return NewOpenAIClient()
-	case "l", "ollama":
+	case "llama":
 		return NewOllamaClient()
 	default:
 		return NewOpenAIClient()

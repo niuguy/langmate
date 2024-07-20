@@ -52,16 +52,30 @@ Ensure your `GOPATH/bin` is in your system's PATH to run the application from an
 
 ## Usage
 
-To use LangMate, run the executable followed by the options:
+To use LangMate, run the executable with the desired options:
 
 ```bash
-langmate [options]
+langmate [-m model] [--lang language]
 ```
-by default, the application uses the OpenAI model to process text. To use the local Ollama model, start your ollama server then run with
 
-```bash
-langmate l
-```
+### Options
+
+- `-m, --model`: Specify the model to use (default: "gpt"). Available models include "gpt", "llama" , gpt represents OpenAI's GPT-4 Turbo model, and llama represents Ollama's llama3-8b.
+- `-l, --lang`: Specify the target language (default: "en"). Available languages include "en", "fr", etc.
+
+### Examples
+
+- **Using the default model (GPT-4 Turbo) and language (English):**
+
+  ```bash
+  langmate
+  ```
+
+- **Using a different model and language:**
+
+  ```bash
+  langmate -m gpt --lang fr
+  ```
 
 
 ## Configuration

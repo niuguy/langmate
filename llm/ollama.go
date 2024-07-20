@@ -22,12 +22,11 @@ func NewOllamaClient() *OllamaClient {
 
 func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
 
-	prompt := fmt.Sprintf("You will receive a text and a destination language. "+
-		"If the text is not in the destination language, translate it."+
-		"If the text is already in the destination language, rephrase it for clarity and style."+
-		"If the text is a single word or slang, please explain it in a way dictionary does,"+
-		"When the input is word or slang, in the bottom please list some alternatives if there are any"+
-		"\n\nInput Text: \" %s \"\nDestination Language: \" %s \"\n\nOutput:", text, lang)
+	prompt := fmt.Sprintf("You will be given a text and a specified destination language. Follow these instructions based on the input:"+
+		"\n1. If the text is not in the destination language, translate it."+
+		"\n2. If the text is in the destination language, enhance its clarity and style."+
+		"\n3. If the text consists of a single word or slang, define it as a dictionary would, and list any synonyms or related terms at the end."+
+		"\n\nInput Text: \"%s\"\nDestination Language: \"%s\"\n\n", text, lang)
 
 	req := &api.GenerateRequest{
 		Model:  "llama3",
@@ -38,10 +37,9 @@ func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
 	}
 
 	ctx := context.Background()
+	rspText := ""
 	respFunc := func(resp api.GenerateResponse) error {
-		// Only print the response here; GenerateResponse has a number of other
-		// interesting fields you want to examine.
-		fmt.Println(resp.Response)
+		rspText = resp.Response
 		return nil
 	}
 
@@ -49,6 +47,6 @@ func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error generating response: %w", err)
 	}
-	return "", nil
+	return rspText, nil
 
 }
