@@ -1,2 +1,6 @@
 
 dist/
+
+# Build artifacts
+langmate
+LangMate.app/
