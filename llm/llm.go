@@ -2,6 +2,7 @@ package llm
 
 type TextProcessor interface {
 	TransferText(text string, lang string) (string, error)
+	RephraseText(text string, lang string) (string, error)
 }
 
 func CreateTextProcessor(llmtype string) TextProcessor {

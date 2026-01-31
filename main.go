@@ -16,13 +16,11 @@ var (
 
 var rootCmd = &cobra.Command{
 	Use:   "langmate",
-	Short: "Double copy text to translate or rephrase",
-	Long:  `Double copy text to translate or rephrase`,
+	Short: "Rephrase selected text with Cmd+Ctrl+R",
+	Long:  `LangMate runs as a background daemon that listens for Cmd+Ctrl+R hotkey to rephrase selected text in place.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		// fmt.Println("model:", model)
-		// fmt.Println("lang:", lang)
 		textProcessor := llm.CreateTextProcessor(model)
-		app.StartHook(textProcessor, lang)
+		app.StartDaemon(textProcessor, lang)
 	},
 }
 

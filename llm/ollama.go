@@ -50,3 +50,28 @@ func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
 	return rspText, nil
 
 }
+
+func (c *OllamaClient) RephraseText(text string, lang string) (string, error) {
+	prompt := "You are a writing assistant. Rephrase the following text for clarity and better style. " +
+		"Output ONLY the rephrased text, nothing else. No explanations, no alternatives, no quotes around the text. " +
+		"Preserve the original meaning and tone.\n\n" + text
+
+	req := &api.GenerateRequest{
+		Model:  "llama3",
+		Prompt: prompt,
+		Stream: new(bool),
+	}
+
+	ctx := context.Background()
+	rspText := ""
+	respFunc := func(resp api.GenerateResponse) error {
+		rspText = resp.Response
+		return nil
+	}
+
+	err := c.Client.Generate(ctx, req, respFunc)
+	if err != nil {
+		return "", fmt.Errorf("error generating response: %w", err)
+	}
+	return rspText, nil
+}

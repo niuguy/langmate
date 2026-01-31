@@ -1,33 +1,24 @@
 # LangMate
 
-LangMate is a command-line application developed in Go, designed to provide users with a seamless interaction with different language models. It supports various models, allowing users to choose between models like Ollama and OpenAI for processing and generating text.
-
-
-
+LangMate is a macOS app that rephrases selected text in place using AI. Select any text, press **Cmd+Ctrl+R**, and watch it get rephrased instantly.
 
 https://github.com/user-attachments/assets/f208a9f9-70b6-482b-adc4-127e9a9ef226
 
-
-
-
-
-
-
 ## Features
 
-- **Multiple Language Models**: Choose between  OpenAI and Ollama 
-- **Easy Text Processing**: Simply perform a double `Command+C` on any text to translate or rephrase it.
-
+- **Rephrase in Place**: Select text in any app, press Cmd+Ctrl+R, and the text is replaced with a rephrased version
+- **Menu Bar App**: Runs quietly in the background with a menu bar indicator
+- **Multiple Language Models**: Supports OpenAI GPT-4 and Ollama (llama3)
 
 ## Installation
 
 ### Prerequisites
 
+- macOS 10.13 or higher
 - Go 1.16 or higher
+- OpenAI API key
 
-### Installing from Source
-
-To install LangMate from source, follow these steps:
+### Build from Source
 
 1. **Clone the repository:**
 
@@ -36,67 +27,86 @@ To install LangMate from source, follow these steps:
    cd langmate
    ```
 
-2. **Build the application:**
+2. **Build the macOS app:**
 
    ```bash
-   go build -o langmate
+   ./scripts/build_app.sh
    ```
 
-3. **Optionally, install the application globally:**
+3. **Install to Applications:**
 
    ```bash
-   go install
+   cp -r LangMate.app /Applications/
    ```
 
-### Direct Installation
+4. **Configure your API key:**
 
-If you prefer not to clone the repository, you can install directly using Go:
+   ```bash
+   echo 'OPENAI_API_KEY=sk-your-api-key-here' > ~/.langmate.env
+   ```
+
+5. **Grant Accessibility permission:**
+   - Open **System Settings** → **Privacy & Security** → **Accessibility**
+   - Click **+** and add `/Applications/LangMate.app`
+   - Enable the toggle
+
+6. **Launch the app** from Spotlight or Applications folder
+
+### Command Line Usage
+
+You can also run LangMate directly from the terminal:
 
 ```bash
-go install github.com/niuguy/langmate@latest
-```
+# Build the binary
+go build -o langmate
 
-Ensure your `GOPATH/bin` is in your system's PATH to run the application from any terminal.
+# Run with default settings (GPT-4, English)
+./langmate
+
+# Run with different model or language
+./langmate -m llama -l fr
+```
 
 ## Usage
 
-To use LangMate, run the executable with the desired options:
+1. Open LangMate (it appears as "LM" in your menu bar)
+2. Select any text in any application
+3. Press **Cmd+Ctrl+R**
+4. The menu bar shows "Rephrasing..." while processing
+5. Your selected text is replaced with the rephrased version
 
-```bash
-langmate [-m model] [--lang language]
-```
+## Options
 
-### Options
-
-- `-m, --model`: Specify the model to use (default: "gpt"). Available models include "gpt", "llama" , gpt represents OpenAI's GPT-4 Turbo model, and llama represents Ollama's llama3-8b.
-- `-l, --lang`: Specify the target language (default: "en"). Available languages include "en", "fr", etc.
-
-### Examples
-
-- **Using the default model (GPT-4 Turbo) and language (English):**
-
-  ```bash
-  langmate
-  ```
-
-- **Using a different model and language:**
-
-  ```bash
-  langmate -m gpt --lang fr
-  ```
-
+- `-m, --model`: Model to use - `gpt` (OpenAI GPT-4 Turbo) or `llama` (Ollama llama3). Default: `gpt`
+- `-l, --lang`: Target language code (e.g., `en`, `fr`, `es`). Default: `en`
 
 ## Configuration
 
-Set environment variables as needed:
+Create `~/.langmate.env` with your API key:
+
+```
+OPENAI_API_KEY=sk-your-api-key-here
+```
+
+Alternatively, set the environment variable:
 
 ```bash
-export OPENAI_API_KEY="your-openai-api-key"
+export OPENAI_API_KEY="sk-your-api-key-here"
 ```
+
+## Troubleshooting
+
+### Hotkey not working
+- Ensure LangMate has Accessibility permission in System Settings
+- After rebuilding, remove and re-add the app in Accessibility settings
+
+### App not launching from Spotlight
+- Make sure `~/.langmate.env` contains your API key
+- Check Console.app for any error messages
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a pull request or open an issue if you have feedback or proposals for new features.
+Contributions are welcome! Please feel free to submit a pull request or open an issue.
 
 ## License
 

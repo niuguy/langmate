@@ -3,10 +3,12 @@ module github.com/niuguy/langmate
 go 1.22.3
 
 require (
+	fyne.io/systray v1.11.0
 	github.com/atotto/clipboard v0.1.4
 	github.com/charmbracelet/bubbles v0.18.0
 	github.com/charmbracelet/bubbletea v0.26.6
 	github.com/charmbracelet/lipgloss v0.12.1
+	github.com/deckarep/gosx-notifier v0.0.0-20180201035817-e127226297fb
 	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1
 	github.com/ollama/ollama v0.2.7
 	github.com/robotn/gohook v0.41.0
@@ -21,6 +23,7 @@ require (
 	github.com/charmbracelet/x/term v0.1.1 // indirect
 	github.com/charmbracelet/x/windows v0.1.0 // indirect
 	github.com/erikgeiser/coninput v0.0.0-20211004153227-1c3628e74d0f // indirect
+	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
