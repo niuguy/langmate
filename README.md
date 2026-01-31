@@ -2,7 +2,6 @@
 
 LangMate is a macOS app that rephrases selected text in place using AI. Select any text, press **Cmd+Ctrl+R**, and watch it get rephrased instantly.
 
-https://github.com/user-attachments/assets/f208a9f9-70b6-482b-adc4-127e9a9ef226
 
 ## Features
 
