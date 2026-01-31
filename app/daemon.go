@@ -13,7 +13,7 @@ import (
 )
 
 const (
-	debounceInterval = 500 * time.Millisecond
+	debounceInterval = 1000 * time.Millisecond
 	llmTimeout       = 30 * time.Second
 )
 
@@ -22,7 +22,7 @@ var (
 	debounceMu      sync.Mutex
 )
 
-// StartDaemon runs the background daemon that listens for Cmd+Shift+R
+// StartDaemon runs the background daemon that listens for Cmd+Ctrl+R
 func StartDaemon(textProcessor llm.TextProcessor, lang string) {
 	fmt.Println("LangMate daemon started")
 	fmt.Println("Press Cmd+Ctrl+R to rephrase selected text")
@@ -35,6 +35,7 @@ func StartDaemon(textProcessor llm.TextProcessor, lang string) {
 		NotifyStartup()
 
 		hook.Register(hook.KeyDown, []string{"cmd", "ctrl", "r"}, func(e hook.Event) {
+			fmt.Println("Hotkey triggered")
 			go handleRephraseHotkey(textProcessor, lang)
 		})
 
@@ -56,6 +57,7 @@ func handleRephraseHotkey(textProcessor llm.TextProcessor, lang string) {
 
 	// Save original clipboard content for restoration on error
 	originalClipboard, _ := clipboard.ReadAll()
+	fmt.Printf("Original clipboard: %s\n", truncateText(originalClipboard, 30))
 
 	// Simulate Cmd+C to copy selected text
 	SimulateCopy()
@@ -71,11 +73,24 @@ func handleRephraseHotkey(textProcessor llm.TextProcessor, lang string) {
 		return
 	}
 
-	// Validate selection
+	fmt.Printf("After copy clipboard: %s\n", truncateText(selectedText, 30))
+
+	// Validate selection - check if clipboard changed and has content
 	selectedText = strings.TrimSpace(selectedText)
 	if selectedText == "" {
 		SetMenuBarStatus("No text!")
 		restoreClipboard(originalClipboard)
+		go func() {
+			time.Sleep(2 * time.Second)
+			SetMenuBarStatus("")
+		}()
+		return
+	}
+
+	// If clipboard didn't change, the copy failed
+	if selectedText == strings.TrimSpace(originalClipboard) {
+		SetMenuBarStatus("Select text!")
+		fmt.Println("Copy failed - clipboard unchanged")
 		go func() {
 			time.Sleep(2 * time.Second)
 			SetMenuBarStatus("")

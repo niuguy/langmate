@@ -67,7 +67,7 @@ func (c *OpenAIClient) TransferText(text string, lang string) (string, error) {
 	resp, err := c.Client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4Turbo,
+			Model: "gpt-4.1",
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -87,7 +87,7 @@ func (c *OpenAIClient) RephraseText(text string, lang string) (string, error) {
 	resp, err := c.Client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: openai.GPT4Turbo,
+			Model: "gpt-4.1",
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,

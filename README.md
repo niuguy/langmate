@@ -76,7 +76,7 @@ go build -o langmate
 
 ## Options
 
-- `-m, --model`: Model to use - `gpt` (OpenAI GPT-4 Turbo) or `llama` (Ollama llama3). Default: `gpt`
+- `-m, --model`: Model to use - `gpt` (OpenAI GPT-4.1) or `llama` (Ollama llama3). Default: `gpt`
 - `-l, --lang`: Target language code (e.g., `en`, `fr`, `es`). Default: `en`
 
 ## Configuration
