@@ -2,7 +2,7 @@ class Langmate < Formula
   desc "Fast macOS menu bar app for AI-powered selected-text rephrasing"
   homepage "https://github.com/niuguy/langmate"
   url "https://github.com/niuguy/langmate/archive/refs/tags/v1.0.4.tar.gz"
-  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
+  sha256 "e6b5e52c4a3a323ffd80c61b8d77cf81729d38b0508994ff220a7dcbe7daa556"
   license "MIT"
   head "https://github.com/niuguy/langmate.git", branch: "main"
 
