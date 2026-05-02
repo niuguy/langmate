@@ -17,6 +17,22 @@ LangMate is a macOS app that rephrases selected text in place using AI. Select a
 - Go 1.22 or higher
 - OpenAI API key
 
+### Homebrew
+
+Install the app:
+
+```bash
+brew tap niuguy/langmate
+brew install --cask langmate
+```
+
+For source builds instead of the cask:
+
+```bash
+brew install niuguy/langmate/langmate
+langmate-install-app
+```
+
 ### Build from Source
 
 1. **Clone the repository:**
