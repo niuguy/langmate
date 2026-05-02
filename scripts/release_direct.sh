@@ -6,7 +6,7 @@ set -euo pipefail
 
 APP_NAME="${APP_NAME:-LangMate}"
 BUNDLE_ID="${BUNDLE_ID:-com.langmate.app}"
-VERSION="${VERSION:-1.0.3}"
+VERSION="${VERSION:-1.0.4}"
 BUILD="${BUILD:-$VERSION}"
 MIN_MACOS_VERSION="${MIN_MACOS_VERSION:-10.15}"
 SIGN_IDENTITY="${SIGN_IDENTITY:?Set SIGN_IDENTITY to your Developer ID Application certificate name}"

@@ -1,8 +1,8 @@
 class Langmate < Formula
   desc "Fast macOS menu bar app for AI-powered selected-text rephrasing"
   homepage "https://github.com/niuguy/langmate"
-  url "https://github.com/niuguy/langmate/archive/refs/tags/v1.0.3.tar.gz"
-  sha256 "3dda96d117993bec32711f93b5f1ec47bf8932cfefbe8b3d3497626aac2c126f"
+  url "https://github.com/niuguy/langmate/archive/refs/tags/v1.0.4.tar.gz"
+  sha256 "0000000000000000000000000000000000000000000000000000000000000000"
   license "MIT"
   head "https://github.com/niuguy/langmate.git", branch: "main"
 
@@ -37,9 +37,9 @@ class Langmate < Formula
           <key>CFBundleIdentifier</key>
           <string>com.langmate.app</string>
           <key>CFBundleVersion</key>
-          <string>1.0.3</string>
+          <string>1.0.4</string>
           <key>CFBundleShortVersionString</key>
-          <string>1.0.3</string>
+          <string>1.0.4</string>
           <key>CFBundlePackageType</key>
           <string>APPL</string>
           <key>CFBundleExecutable</key>

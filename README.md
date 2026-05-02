@@ -134,7 +134,7 @@ Build a signed, notarized DMG:
 ```bash
 SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID1234)" \
 NOTARY_PROFILE="langmate-notary" \
-VERSION="1.0.3" \
+VERSION="1.0.4" \
 ./scripts/release_direct.sh
 ```
 

@@ -45,7 +45,7 @@ func RunMenuBar(state *daemonState, onReady func(), onQuit func()) {
 
 		systray.AddSeparator()
 
-		mPreview := systray.AddMenuItemCheckbox("Always Show Preview", "Preview and edit rephrased text before replacing the selection", false)
+		mPreview := systray.AddMenuItemCheckbox("Show Preview", "Preview and edit rephrased text before replacing the selection", false)
 
 		mModel := systray.AddMenuItem("Model", "Choose model provider")
 		modelItems := map[string]*systray.MenuItem{}
