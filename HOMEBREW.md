@@ -12,10 +12,10 @@ cp Formula/langmate.rb "$(brew --repository local/langmate)/Formula/langmate.rb"
 brew install --HEAD --build-from-source local/langmate/langmate
 ```
 
-Install the app bundle into `/Applications`:
+Install the cask into `/Applications`:
 
 ```bash
-langmate-install-app
+brew install --cask local/langmate/langmate
 ```
 
 ## Publishing
@@ -39,12 +39,16 @@ langmate-install-app
 
 4. Publish the formula in a tap repository, for example `homebrew-langmate`.
 
-5. Users install with:
+5. Users install the app with:
 
    ```bash
    brew tap niuguy/langmate
-   brew install langmate
-   langmate-install-app
+   brew install --cask langmate
    ```
 
-Homebrew installs the app bundle under its prefix. `langmate-install-app` copies that bundle into `/Applications`, quits any running LangMate instance, and relaunches the app.
+The formula remains available for users who want to build from source:
+
+```bash
+brew install niuguy/langmate/langmate
+langmate-install-app
+```
