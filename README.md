@@ -110,38 +110,6 @@ Alternatively, set the environment variable:
 export OPENAI_API_KEY="sk-your-api-key-here"
 ```
 
-## Direct Distribution
-
-LangMate can be distributed outside the Mac App Store as a signed and notarized DMG.
-
-Prerequisites:
-
-- Apple Developer Program membership
-- A `Developer ID Application` certificate installed in Keychain
-- Xcode command line tools
-
-Create a notarytool keychain profile once:
-
-```bash
-xcrun notarytool store-credentials langmate-notary \
-  --apple-id "you@example.com" \
-  --team-id "TEAMID1234" \
-  --password "app-specific-password"
-```
-
-Build a signed, notarized DMG:
-
-```bash
-SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID1234)" \
-NOTARY_PROFILE="langmate-notary" \
-VERSION="1.0.4" \
-./scripts/release_direct.sh
-```
-
-The release artifact is written to `dist/LangMate-<version>.dmg`.
-
-LangMate requires Accessibility permission to send the hotkey-driven copy and paste commands. Users should install the app in `/Applications`, launch it once, then enable it in **System Settings** -> **Privacy & Security** -> **Accessibility**.
-
 ## Troubleshooting
 
 ### Hotkey not working
