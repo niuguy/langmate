@@ -7,8 +7,8 @@ import (
 const appName = "LangMate"
 
 // NotifyStartup shows a notification that the daemon has started
-func NotifyStartup() {
-	note := gosxnotifier.NewNotification("Ready! Press Cmd+Shift+R to rephrase selected text.")
+func NotifyStartup(hotkey string) {
+	note := gosxnotifier.NewNotification("Ready! Press " + hotkey + " to rephrase selected text.")
 	note.Title = appName
 	note.Sound = gosxnotifier.Default
 	note.Push()

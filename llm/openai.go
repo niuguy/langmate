@@ -13,9 +13,10 @@ import (
 
 type OpenAIClient struct {
 	Client *openai.Client
+	Model  string
 }
 
-func NewOpenAIClient() *OpenAIClient {
+func NewOpenAIClient(model string) (*OpenAIClient, error) {
 	apiKey := os.Getenv("OPENAI_API_KEY")
 
 	// If not in environment, try loading from ~/.langmate.env
@@ -24,13 +25,14 @@ func NewOpenAIClient() *OpenAIClient {
 	}
 
 	if apiKey == "" {
-		fmt.Println("OPENAI_API_KEY not found. Set it in environment or ~/.langmate.env")
-		fmt.Println("Example: echo 'OPENAI_API_KEY=sk-...' > ~/.langmate.env")
-		os.Exit(1)
+		return nil, fmt.Errorf("OPENAI_API_KEY not found; set it in the environment or ~/.langmate.env")
 	}
 
 	client := openai.NewClient(apiKey)
-	return &OpenAIClient{Client: client}
+	return &OpenAIClient{
+		Client: client,
+		Model:  model,
+	}, nil
 }
 
 func loadAPIKeyFromConfig() string {
@@ -56,7 +58,7 @@ func loadAPIKeyFromConfig() string {
 	return ""
 }
 
-func (c *OpenAIClient) TransferText(text string, lang string) (string, error) {
+func (c *OpenAIClient) TransferText(ctx context.Context, text string, lang string) (string, error) {
 	prompt := fmt.Sprintf("You will receive a text and a destination language. "+
 		"If the text is not in the destination language, translate it."+
 		"If the text is already in the destination language, rephrase it for clarity and style."+
@@ -65,9 +67,9 @@ func (c *OpenAIClient) TransferText(text string, lang string) (string, error) {
 		"\n\nInput Text: \" %s \"\nDestination Language: \" %s \"\n\nOutput:", text, lang)
 
 	resp, err := c.Client.CreateChatCompletion(
-		context.Background(),
+		ctx,
 		openai.ChatCompletionRequest{
-			Model: "gpt-4.1",
+			Model: c.Model,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
@@ -83,15 +85,15 @@ func (c *OpenAIClient) TransferText(text string, lang string) (string, error) {
 	return rst, nil
 }
 
-func (c *OpenAIClient) RephraseText(text string, lang string) (string, error) {
+func (c *OpenAIClient) RephraseText(ctx context.Context, text string, lang string) (string, error) {
 	resp, err := c.Client.CreateChatCompletion(
-		context.Background(),
+		ctx,
 		openai.ChatCompletionRequest{
-			Model: "gpt-4.1",
+			Model: c.Model,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleSystem,
-					Content: "You are a writing assistant. Rephrase the given text for clarity and better style. Output ONLY the rephrased text, nothing else. No explanations, no alternatives, no quotes around the text. Preserve the original meaning and tone.",
+					Content: fmt.Sprintf("You are a writing assistant. Rephrase the given text for clarity and better style. Output ONLY the rephrased text, nothing else. No explanations, no alternatives, no quotes around the text. Preserve the original meaning and tone. Return the final text in the language identified by code %q.", lang),
 				},
 				{
 					Role:    openai.ChatMessageRoleUser,

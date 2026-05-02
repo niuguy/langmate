@@ -1,6 +1,7 @@
 package app
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/charmbracelet/bubbles/viewport"
@@ -29,10 +30,15 @@ func initialModel() model {
 	rightVp := viewport.New(viewportWidth, viewportDownHeight)
 	rightVp.SetContent("Transferred text will appear here...")
 
+	textProcessor, err := llm.CreateTextProcessor("ollama-local")
+	if err != nil {
+		rightVp.SetContent(fmt.Sprintf("Error: %v", err))
+	}
+
 	return model{
 		upViewport:    leftVp,
 		downViewport:  rightVp,
-		textProcessor: llm.CreateTextProcessor("Ollama"),
+		textProcessor: textProcessor,
 	}
 }
 
@@ -49,7 +55,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 	case clipboardMsg:
 		m.upViewport.SetContent(msg.content)
-		transferredText, err := m.textProcessor.TransferText(msg.content, "en")
+		if m.textProcessor == nil {
+			m.downViewport.SetContent("Error: no text processor configured")
+			break
+		}
+		transferredText, err := m.textProcessor.TransferText(context.Background(), msg.content, "en")
 		if err != nil {
 			m.downViewport.SetContent(fmt.Sprintf("Error: %v", err))
 		} else {

@@ -5,6 +5,7 @@
 set -e
 
 APP_NAME="LangMate"
+VERSION="${VERSION:-1.0.3}"
 APP_DIR="$APP_NAME.app"
 CONTENTS_DIR="$APP_DIR/Contents"
 MACOS_DIR="$CONTENTS_DIR/MacOS"
@@ -21,6 +22,9 @@ mkdir -p "$RESOURCES_DIR"
 echo "Building langmate binary..."
 go build -o "$MACOS_DIR/langmate" .
 
+echo "Building preview helper..."
+swiftc "$PWD/preview-helper/main.swift" -o "$MACOS_DIR/langmate-preview"
+
 # Create Info.plist
 cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
@@ -34,15 +38,15 @@ cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
     <key>CFBundleIdentifier</key>
     <string>com.langmate.app</string>
     <key>CFBundleVersion</key>
-    <string>1.0.0</string>
+    <string>__VERSION__</string>
     <key>CFBundleShortVersionString</key>
-    <string>1.0.0</string>
+    <string>__VERSION__</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleExecutable</key>
     <string>langmate</string>
     <key>LSMinimumSystemVersion</key>
-    <string>10.13</string>
+    <string>10.15</string>
     <key>LSUIElement</key>
     <true/>
     <key>NSHighResolutionCapable</key>
@@ -52,6 +56,8 @@ cat > "$CONTENTS_DIR/Info.plist" << 'EOF'
 </dict>
 </plist>
 EOF
+
+sed -i '' "s/__VERSION__/$VERSION/g" "$CONTENTS_DIR/Info.plist"
 
 # No launcher script needed - binary auto-detects .app bundle
 
@@ -66,4 +72,4 @@ echo "  1. Open System Settings > Privacy & Security > Accessibility"
 echo "  2. Click + and add LangMate from Applications"
 echo "  3. Double-click LangMate.app to start"
 echo ""
-echo "The app runs in the background. Use Cmd+Shift+R to rephrase selected text."
+echo "The app runs in the background. Use Cmd+Ctrl+R to rephrase selected text."

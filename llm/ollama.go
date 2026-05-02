@@ -9,18 +9,22 @@ import (
 
 type OllamaClient struct {
 	Client *api.Client
+	Model  string
 }
 
-func NewOllamaClient() *OllamaClient {
+func NewOllamaClient(model string) (*OllamaClient, error) {
 	client, err := api.ClientFromEnvironment()
 	if err != nil {
-		panic(err)
+		return nil, fmt.Errorf("create ollama client: %w", err)
 	}
 
-	return &OllamaClient{Client: client}
+	return &OllamaClient{
+		Client: client,
+		Model:  model,
+	}, nil
 }
 
-func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
+func (c *OllamaClient) TransferText(ctx context.Context, text string, lang string) (string, error) {
 
 	prompt := fmt.Sprintf("You will be given a text and a specified destination language. Follow these instructions based on the input:"+
 		"\n1. If the text is not in the destination language, translate it."+
@@ -29,14 +33,13 @@ func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
 		"\n\nInput Text: \"%s\"\nDestination Language: \"%s\"\n\n", text, lang)
 
 	req := &api.GenerateRequest{
-		Model:  "llama3",
+		Model:  c.Model,
 		Prompt: prompt,
 
 		// set streaming to false
 		Stream: new(bool),
 	}
 
-	ctx := context.Background()
 	rspText := ""
 	respFunc := func(resp api.GenerateResponse) error {
 		rspText = resp.Response
@@ -51,18 +54,17 @@ func (c *OllamaClient) TransferText(text string, lang string) (string, error) {
 
 }
 
-func (c *OllamaClient) RephraseText(text string, lang string) (string, error) {
+func (c *OllamaClient) RephraseText(ctx context.Context, text string, lang string) (string, error) {
 	prompt := "You are a writing assistant. Rephrase the following text for clarity and better style. " +
 		"Output ONLY the rephrased text, nothing else. No explanations, no alternatives, no quotes around the text. " +
-		"Preserve the original meaning and tone.\n\n" + text
+		fmt.Sprintf("Preserve the original meaning and tone. Return the final text in the language identified by code %q.\n\n", lang) + text
 
 	req := &api.GenerateRequest{
-		Model:  "llama3",
+		Model:  c.Model,
 		Prompt: prompt,
 		Stream: new(bool),
 	}
 
-	ctx := context.Background()
 	rspText := ""
 	respFunc := func(resp api.GenerateResponse) error {
 		rspText = resp.Response

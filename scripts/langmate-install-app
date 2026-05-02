@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# Copy the Homebrew-installed LangMate.app bundle into /Applications.
+
+set -euo pipefail
+
+APP_NAME="LangMate"
+APP_BUNDLE="$APP_NAME.app"
+SOURCE_APP="${LANGMATE_APP_SOURCE:-__PREFIX__/LangMate.app}"
+INSTALL_PATH="/Applications/$APP_BUNDLE"
+
+if [[ ! -d "$SOURCE_APP" ]]; then
+  echo "LangMate app bundle not found: $SOURCE_APP" >&2
+  exit 1
+fi
+
+echo "Quitting running $APP_NAME instances..."
+osascript -e "tell application \"$APP_NAME\" to quit" >/dev/null 2>&1 || true
+pkill -x langmate >/dev/null 2>&1 || true
+
+sleep 1
+
+if [[ -d "$INSTALL_PATH" ]]; then
+  echo "Replacing $INSTALL_PATH..."
+  rm -rf "$INSTALL_PATH"
+else
+  echo "Installing to $INSTALL_PATH..."
+fi
+
+ditto "$SOURCE_APP" "$INSTALL_PATH"
+
+echo "Launching $APP_NAME..."
+open "$INSTALL_PATH"
+
+echo ""
+echo "Installed and launched $INSTALL_PATH"

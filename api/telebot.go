@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"os"
@@ -57,7 +58,7 @@ func (s *BotServer) Start() {
 		case "/help":
 			msg.Text = "You can send me any message and I will echo it back!"
 		default:
-			transferredText, err := s.openaiClient.TransferText(update.Message.Text, "en")
+			transferredText, err := s.openaiClient.TransferText(context.Background(), update.Message.Text, "en")
 			if err != nil {
 				log.Printf("Error transferring text: %v", err)
 				transferredText = "Sorry, I couldn't process your request."

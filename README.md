@@ -7,14 +7,14 @@ LangMate is a macOS app that rephrases selected text in place using AI. Select a
 
 - **Rephrase in Place**: Select text in any app, press Cmd+Ctrl+R, and the text is replaced with a rephrased version
 - **Menu Bar App**: Runs quietly in the background with a menu bar indicator
-- **Multiple Language Models**: Supports OpenAI GPT-4 and Ollama (llama3)
+- **Multiple Language Models**: Supports OpenAI GPT-4.1 and Ollama (llama3)
 
 ## Installation
 
 ### Prerequisites
 
-- macOS 10.13 or higher
-- Go 1.16 or higher
+- macOS 10.15 or higher
+- Go 1.22 or higher
 - OpenAI API key
 
 ### Build from Source
@@ -59,7 +59,7 @@ You can also run LangMate directly from the terminal:
 # Build the binary
 go build -o langmate
 
-# Run with default settings (GPT-4, English)
+# Run with default settings (GPT-4.1, English)
 ./langmate
 
 # Run with different model or language
@@ -73,6 +73,7 @@ go build -o langmate
 3. Press **Cmd+Ctrl+R**
 4. The menu bar shows "Rephrasing..." while processing
 5. Your selected text is replaced with the rephrased version
+6. Your original clipboard contents are restored after the paste completes
 
 ## Options
 
@@ -92,6 +93,38 @@ Alternatively, set the environment variable:
 ```bash
 export OPENAI_API_KEY="sk-your-api-key-here"
 ```
+
+## Direct Distribution
+
+LangMate can be distributed outside the Mac App Store as a signed and notarized DMG.
+
+Prerequisites:
+
+- Apple Developer Program membership
+- A `Developer ID Application` certificate installed in Keychain
+- Xcode command line tools
+
+Create a notarytool keychain profile once:
+
+```bash
+xcrun notarytool store-credentials langmate-notary \
+  --apple-id "you@example.com" \
+  --team-id "TEAMID1234" \
+  --password "app-specific-password"
+```
+
+Build a signed, notarized DMG:
+
+```bash
+SIGN_IDENTITY="Developer ID Application: Your Name (TEAMID1234)" \
+NOTARY_PROFILE="langmate-notary" \
+VERSION="1.0.3" \
+./scripts/release_direct.sh
+```
+
+The release artifact is written to `dist/LangMate-<version>.dmg`.
+
+LangMate requires Accessibility permission to send the hotkey-driven copy and paste commands. Users should install the app in `/Applications`, launch it once, then enable it in **System Settings** -> **Privacy & Security** -> **Accessibility**.
 
 ## Troubleshooting
 

@@ -2,6 +2,7 @@ package app
 
 import (
 	"bufio"
+	"context"
 	"fmt"
 	"os"
 	"time"
@@ -38,7 +39,7 @@ func StartHook(textProcessor llm.TextProcessor, lang string) {
 
 				done := make(chan bool)
 				go showWaitingAnimation(done)
-				processedText, _ := textProcessor.TransferText(content, lang)
+				processedText, _ := textProcessor.TransferText(context.Background(), content, lang)
 				done <- true
 				fmt.Print("\033[H\033[2J") // Clear screen
 				fmt.Println(content)
@@ -65,7 +66,7 @@ func StartHook(textProcessor llm.TextProcessor, lang string) {
 
 		done := make(chan bool)
 		go showWaitingAnimation(done)
-		processedText, err := textProcessor.TransferText(input, lang)
+		processedText, err := textProcessor.TransferText(context.Background(), input, lang)
 		done <- true
 
 		fmt.Println(input)
